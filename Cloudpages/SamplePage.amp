@@ -24,8 +24,12 @@ SET @jsPage                     = 111
   * Load ENV variables
   ============================================================================================================================== */
 
+TreatAsContent(HTTPGet(CloudPagesURL(@envVariablesPage)))
+
+
 Output(CloudPagesURL(@envVariablesPage))
 Output(v('1'))
+Output(v(@pageName))
 
 
 ]%%
