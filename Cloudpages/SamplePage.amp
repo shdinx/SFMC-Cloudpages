@@ -12,7 +12,7 @@
 
 
 SET @pageName                   = 'SamplePage'
-SET @envVariablesPage           = 209
+SET @envVariablesPage           = 210
 SET @formControllerPage         = 111
 SET @languageControllerPage     = 111
 SET @languageJSONPage           = 111
@@ -23,7 +23,7 @@ SET @jsPage                     = 111
  /* ============================================================================================================================== 
   * Load ENV variables
   ============================================================================================================================== */
-
+Output(TreatAsContent(HTTPGet(CloudPagesURL(@envVariablesPage))))
 
 Output(v(@test))
 Output(v('1'))
