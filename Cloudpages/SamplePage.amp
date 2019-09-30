@@ -26,7 +26,8 @@ SET @jsPage                     = 111
 CloudPagesURL(@envVariablesPage)
 
 
-Output(@test)
+Output(v(@test))
+Output(v('1'))
 
 
 ]%%
