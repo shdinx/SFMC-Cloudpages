@@ -1,0 +1,118 @@
+%%[
+ /* ============================================================================================================================== 
+ *
+ * Form Controller
+ *
+ * Endpoint to handle update request from the SamplePage form
+ *
+ * Given actions:
+ *    * subscribe
+ *    * somethingElse
+ *
+ * @author  Sascha Huwald <shd.inx@gmail.com>
+ *
+ ============================================================================================================================== */
+
+/* page name we use for naming convention. ContentBlocks and the salt setting is based of this */
+SET @pageName           = 'SamplePage'
+/*  the required payload. If any are empty or missing an error will be generated. 
+    Otherwise a variable with the same name will be generated  */
+SET @requiredPayload    = 'token|action|email|name'
+/* the dataextension name holding the salt for extra security */
+SET @de_CloudPageSalt   = 'CloudPage - Salt'
+/* Cloudpage ID for the landingpage */
+SET @cp_LandingPage     = 000
+/* error handle flag */
+SET @isError            = FALSE
+
+
+/* ============================================================================================================================== 
+ * Validate the call
+ ============================================================================================================================== */
+
+/* Validate required payload. On success create a variable with the name of the payload */
+SET @parameters = BuildRowsetFromString(@requiredPayload,'|')
+FOR @i = 1 TO RowCount(@parameters) DO
+    SET @parameter = Field(Row(@parameters, @i),1)
+    SET @parameterValue = IIF(Empty(QueryParameter(@parameter)),RequestParameter(@parameter),QueryParameter(@parameter))
+    IF Empty(@parameterValue) THEN
+        SET @isError = TRUE
+    ENDIF
+    TreatAsContent( Concat( "%", "%[ SET @", @parameter, " = '", @parameterValue , "']%", "%" ) )
+NEXT @i
+
+
+/* Validate the token  */
+SET @salt                   = Lookup(@de_CloudPageSalt,'Salt','Cloudpage',@pageName)
+SET @validToken             = MD5(Concat(@action,@salt))
+
+IF @token != @validToken THEN
+    SET @redirectStatus     = 'error'
+    SET @redirectCode       = '401'
+    SET @redirectMessage    = 'Access denied - Invalid Authentication'
+    SET @redirectMethod     = 'ValidateToken'
+
+/* Only continue if no error */
+ELSEIF @isError == TRUE THEN
+    SET @redirectStatus     = 'error'
+    SET @redirectCode       = '400'
+    SET @redirectMessage    = 'Access denied - Invalid Input'
+    SET @redirectMethod     = 'CheckInput'
+
+/* ============================================================================================================================== 
+ * ACTION: subscribe
+============================================================================================================================== */
+
+ELSEIF @action == 'subscribe' THEN 
+
+    /* Add code to insert subscriber here */
+
+
+    /* on success set the redirect to OK */
+    SET @redirectStatus     = 'ok'
+    SET @redirectCode       = '200'
+    SET @redirectMessage    = 'Subscription Successful'
+    SET @redirectMethod     = @action
+
+
+
+/* ============================================================================================================================== 
+ * ACTION: another action
+============================================================================================================================== */
+
+ELSEIF @action == 'somethingElse' THEN 
+
+    /* Add code to insert some other actions */
+
+
+    /* on success set the redirect to OK */
+    SET @redirectStatus     = 'ok'
+    SET @redirectCode       = '200'
+    SET @redirectMessage    = 'Successful'
+    SET @redirectMethod     = @action
+
+
+
+/* ============================================================================================================================== 
+ * ACTION: unkown
+============================================================================================================================== */   
+
+ELSE 
+    SET @redirectStatus     = 'error'
+    SET @redirectCode       = '405'
+    SET @redirectMessage    = 'Access denied - Action required'
+    SET @redirectMethod     = 'ActionUnknown'
+ENDIF
+
+
+/* ============================================================================================================================== 
+ * Load Language
+ ============================================================================================================================== */
+Output(ContentBlockByKey(Concat(@pageName,'_Language')))
+
+
+/* Redirect to the landingpage with the given redirect parameters */
+Redirect(CloudPagesURL(@cp_LandingPage,@localeGetParameter,@locale,'redirectStatus',@redirectStatus,'redirectCode',@redirectCode,'redirectMethod',@redirectMethod,'redirectMessage',@redirectMessage))
+
+
+]%%

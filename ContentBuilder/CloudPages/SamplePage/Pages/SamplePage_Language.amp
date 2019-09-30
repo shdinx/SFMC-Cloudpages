@@ -1,0 +1,66 @@
+%%[
+/* ============================================================================================================================== 
+ *
+ * SamplePage Language file
+ *
+ * Load the language from the JSON. To extend, simple add more data to the JSON file
+ *
+ * @author  Sascha Huwald <shd.inx@gmail.com>
+ *
+ ============================================================================================================================== */
+
+/* the locale parameter name. e.g. http://...com?l=US */
+SET @localeGetParameter     = 'l'
+/* set the locale parameter value */
+Set @localeParameter        = IIF(Empty(QueryParameter(@localeGetParameter)),RequestParameter(@localeGetParameter),QueryParameter(@localeGetParameter))
+/* the prefix used for variables. Reference in the HTML need to reflect this prefix */
+SET @localePrefix           = 'i18n_'
+/* the default locale used from the JSON to set the default text variables */
+SET @localeDefaultCountry   = 'US'
+/* if the locale parameter is empty use the default locale */
+SET @locale                 = IIF(Empty(@localeParameter),@localeDefaultCountry,@localeParameter)
+/* load the locale JSON */
+SET @localeJson             = ContentBlockByKey(Concat(@pageName,"_Language_JSON"))
+
+
+/* ============================================================================================================================== 
+ * Build language variables
+ ============================================================================================================================== */
+]%%
+<script runat="server">
+    Platform.Load("Core","1.1.5");
+
+    function isObject(val) {
+        if (val === null) { return false;}
+            return ( (typeof val === 'function') || (typeof val === 'object') );
+    }
+
+    // convert AMPScript variable to SSJS to process JSON
+    var localeJson = Variable.GetValue("@localeJson");
+    var locale = Variable.GetValue("@locale");
+    var localeDefaultCountry = Variable.GetValue("@localeDefaultCountry");
+    var localePrefix = Variable.GetValue("@localePrefix");
+
+    // parse the JSON string from the AMPScript variable
+    var json = Platform.Function.ParseJSON(localeJson);
+
+    // error if locale and default country could not be initialized
+    if (!isObject(json[locale]) && !isObject(json[localeDefaultCountry]) ) {
+        Variable.SetValue('@isError',TRUE);
+        Variable.SetValue('@redirectStatus','error');
+        Variable.SetValue('@redirectCode','500');
+        Variable.SetValue('@redirectMessage','Failed to load language JSON');
+        Variable.SetValue('@redirectMethod','LoadLanguage');
+    } else {
+
+        // use posted locale or default country locale
+        var i18n = ( isObject(json[locale]) ? json[locale] : json[localeDefaultCountry] )
+
+        // iterate over each locale item
+        for (var key in i18n) {
+            
+            // Create AMPScript variable
+            Variable.SetValue("@"+localePrefix+key,i18n[key]);
+        }
+    }
+</script>

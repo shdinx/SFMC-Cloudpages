@@ -1,14 +1,11 @@
 %%[
 /* ============================================================================================================================== 
  *
- * SamplePage Entry Point
- *
- * Load all pages into the main site
+ * SamplePage Landingpage
  *
  * @author  Sascha Huwald <shd.inx@gmail.com>
  *
  ============================================================================================================================== */
-
 
 
 
@@ -18,21 +15,10 @@
 
 /* page name we use for naming convention. ContentBlocks and the salt setting is based of this */
 SET @pageName               = 'SamplePage'
-/* the post action for the controller */
-SET @action                 = 'subscribe'
-/* the dataextension name holding the salt for extra security */
-SET @de_CloudPageSalt       = 'CloudPage - Salt'
-/* Cloudpage ID for the controller */
-SET @cp_FromController      = 000
-/* Cloudpage ID for the landingpage */
-SET @cp_LandingPage         = 000
-/* get the salt from the DE. If the page ever be visible the salt stays secure inside the SFMC enviroment */
-SET @salt                   = Lookup(@de_CloudPageSalt,'Salt','Cloudpage',@pageName)
-/* build the token. Can be extended with a TTL of XX seconds. Use Now() and add the seconds as required */
-SET @token                  = MD5(Concat(@action,@salt))
 /* error handle flag */
 SET @isError                = FALSE
-
+/* Cloudpage ID for the landingpage */
+SET @cp_LandingPage         = 000
 
 
 /* ============================================================================================================================== 
@@ -49,15 +35,12 @@ IF @isError == TRUE THEN
     Redirect(CloudPagesURL(@cp_LandingPage,@localeGetParameter,@locale,'redirectStatus',@redirectStatus,'redirectCode',@redirectCode,'redirectMethod',@redirectMethod,'redirectMessage',@redirectMessage))
 
 
-
 /* ============================================================================================================================== 
  * Load HTML Design
  ============================================================================================================================== */
 ELSE 
-    /* build the actual form request URL. Ensure to use CloudPagesURL to further secure the post with SFMC internal query string */
-    SET @formAction = CloudPagesURL(@cp_FromController,'token',@token,'action',@action,@localeGetParameter,@locale)
-    /* Load the actual HTML contentblock */
-    Output(ContentBlockByKey(@pageName))
+	Output(ContentBlockByKey(Concat(@pageName,'_LandingPage')))
 ENDIF
+
 
 ]%%

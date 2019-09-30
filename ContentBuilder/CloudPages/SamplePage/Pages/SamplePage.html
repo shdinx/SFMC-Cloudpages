@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>%%=v(@i18n_pageTitle)=%%</title>
+    <!-- Page level plugin CSS-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row text-center">
+            <div class="col d-flex justify-content-center">
+                <div class="card text-center mt-4">
+                    <form class="text-center border border-light p-5" action="%%=v(@formAction)=%%" method="POST">
+                        <p class="h4 mb-4">%%=v(@i18n_formHeadline)=%%</p>
+                        <p>%%=v(@i18n_formSubHeadline)=%%</p>
+                        <!-- Name -->
+                        <input type="text" name="name" class="form-control mb-4" placeholder="%%=v(@i18n_formInputPlaceholderName)=%%">
+                        <!-- Email -->
+                        <input type="email" name="email" class="form-control mb-4" placeholder="%%=v(@i18n_formInputPlaceholderEmail)=%%">
+                        <!-- Sign in button -->
+                        <button class="btn btn-info btn-block" type="submit">%%=v(@i18n_formButton)=%%</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

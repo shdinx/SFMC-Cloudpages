@@ -1,0 +1,25 @@
+{
+    "US":
+    {
+        "pageTitle": "Sample Subscription Page",
+        "formHeadline": "Subscribe",
+        "formSubHeadline": "We are sending newsletters",
+        "formInputPlaceholderName": "Name",
+        "formInputPlaceholderEmail": "E-Mail",
+        "formButton": "Submit",
+        "landingPageSuccess" : "Thank you, your email has been subscribed.",
+        "landingPageError" : "We're unable to process your request. Please try again later." 
+    },
+
+    "DE":
+    {
+        "pageTitle": "Beispiel einer Anmeldeseite",
+        "formHeadline": "Anmeldung",
+        "formSubHeadline": "Wir senden Ihnen Newsletters",
+        "formInputPlaceholderName": "Name",
+        "formInputPlaceholderEmail": "E-Mail",
+        "formButton": "Anmelden",
+        "landingPageSuccess" : "Vielen Dank, Ihre E-Mail wurde in unserem Verteiler eingetragen.",
+        "landingPageError" : "Es ist ein Fehler aufgetreten, bitte versuchen Sie es später erneut"     
+    }
+}
